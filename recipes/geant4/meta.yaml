@@ -1,0 +1,125 @@
+{% set name = "geant4" %}
+{% set version = "11.0.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/Geant4/geant4/archive/v{{ version }}.tar.gz
+  sha256: 32c9b35b875dec5598e7c3de1350e967070c87f0e598da1055c98cfee1bcdc90
+
+build:
+  number: 0
+  skip: true  # [win]
+  script: ${RECIPE_DIR}/build_geant4.sh
+  run_exports:
+    - {{ pin_subpackage('geant4', max_pin='x.x.x') }}
+
+# Specifying `compiler('cxx')` as a top-level build requirements to force
+# conda-smithy to generate the correct build matrix.
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make  # [unix]
+    - sed
+    # For OpenGL: https://conda-forge.org/docs/maintainer/knowledge_base.html#libgl
+    - {{ cdt('mesa-libgl-devel') }}  # [linux]
+    - {{ cdt('mesa-dri-drivers') }}  # [linux]
+    - {{ cdt('libselinux') }}  # [linux]
+    - {{ cdt('libxdamage') }}  # [linux]
+    - {{ cdt('libxxf86vm') }}  # [linux]
+    - {{ cdt('libxext') }}     # [linux]
+  host:
+    - python
+    - boost
+    - clhep =2.4.5.1
+    - expat
+    - freetype
+    - libglu  # [linux]
+    - qt-main
+    - xerces-c
+    - xorg-libx11
+    - xorg-libxfixes
+    - xorg-libxmu
+    - zlib
+  run:
+    - python
+    - boost
+    - libglu  # [linux]
+    - xorg-libx11
+    - xorg-libxmu
+    # Anything that builds against GEANT4 will need these, even if Qt/OpenGL isn't actually being used
+    # As the solution to the errors isn't obvious, add them to the runtime dependencies
+    - {{ cdt('mesa-libgl-devel') }}  # [linux]
+    - {{ cdt('mesa-dri-drivers') }}  # [linux]
+    - {{ cdt('libselinux') }}  # [linux]
+    - {{ cdt('libxdamage') }}  # [linux]
+    - {{ cdt('libxxf86vm') }}  # [linux]
+    - xorg-libxfixes  # [linux]
+    # GEANT4 data packages, versions are taken from:
+    # https://github.com/Geant4/geant4/blob/v{{ version }}/cmake/Modules/Geant4DatasetDefinitions.cmake
+    - geant4-data-abla =3.1
+    - geant4-data-emlow =8.0
+    - geant4-data-ensdfstate =2.3
+    - geant4-data-incl =1.0
+    - geant4-data-ndl =4.6
+    - geant4-data-particlexs =4.0
+    - geant4-data-photonevaporation =5.7
+    - geant4-data-pii =1.3
+    - geant4-data-radioactivedecay =5.6
+    - geant4-data-realsurface =2.2
+    - geant4-data-saiddata =2.0
+
+test:
+  requires:
+    - cmake
+    - make  # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  commands:
+    - geant4-config --version
+    - $RECIPE_DIR/test_geant4.sh
+  imports:
+    - Geant4
+    - Geant4.G4digits_hits
+    - Geant4.G4event
+    - Geant4.G4gdml
+    - Geant4.G4geometry
+    - Geant4.G4global
+    - Geant4.G4graphics_reps
+    - Geant4.G4intercoms
+    - Geant4.G4interfaces
+    - Geant4.G4materials
+    - Geant4.G4particles
+    - Geant4.G4physicslists
+    - Geant4.G4processes
+    - Geant4.G4run
+    - Geant4.G4track
+    - Geant4.G4tracking
+    - Geant4.G4visualization
+
+about:
+  summary: Geant4 is a toolkit for the simulation of the passage of particles through matter.
+  description: |
+    Geant4 is a toolkit for the simulation of the passage of particles through
+    matter. Its areas of application include high energy, nuclear and
+    accelerator physics, as well as studies in medical and space science. The
+    three main reference papers for Geant4 are published in Nuclear Instruments
+    and Methods in Physics Research [A 506 (2003) 250-303](http://www.sciencedirect.com/science/article/pii/S0168900203013688),
+    IEEE Transactions on Nuclear Science [53 No. 1 (2006) 270-278](https://ieeexplore.ieee.org/xpls/abs_all.jsp?isnumber=33833&amp;arnumber=1610988&amp;count=33&amp;index=7)
+    and Nuclear Instruments and Methods in Physics Research [A 835 (2016) 186-225](http://www.sciencedirect.com/science/article/pii/S0168900216306957).
+  home: https://geant4.web.cern.ch/
+  dev_url: https://github.com/Geant4/geant4
+  doc_url: https://geant4.web.cern.ch/support
+  license: LicenseRef-Geant4
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - tschoonj
+    - chrisburr
