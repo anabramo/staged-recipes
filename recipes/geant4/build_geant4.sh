@@ -37,9 +37,9 @@ cmake                                                          \
       -DCMAKE_INSTALL_PREFIX="${PREFIX}"                       \
       -DBUILD_SHARED_LIBS=ON                                   \
       -DCMAKE_CXX_STANDARD=17                                 \
-      -DGEANT4_BUILD_MULTITHREADED=ON                          \
+      -DGEANT4_BUILD_MULTITHREADED=OFF                         \
       -DGEANT4_BUILD_TLS_MODEL=global-dynamic                  \
-      -DGEANT4_INSTALL_DATA=OFF                                \
+      -DGEANT4_INSTALL_DATA=ON                                 \
       -DGEANT4_INSTALL_DATADIR="${PREFIX}/share/Geant4/data"   \
       -DGEANT4_INSTALL_EXAMPLES=ON                             \
       -DGEANT4_INSTALL_PACKAGE_CACHE=OFF                       \
@@ -49,7 +49,6 @@ cmake                                                          \
       -DGEANT4_USE_SYSTEM_CLHEP=ON                             \
       -DGEANT4_USE_SYSTEM_EXPAT=ON                             \
       -DGEANT4_USE_SYSTEM_ZLIB=ON                              \
-      -DGEANT4_USE_PYTHON=ON                                   \
       "${CMAKE_PLATFORM_FLAGS[@]}"                             \
       "${SRC_DIR}"
 
