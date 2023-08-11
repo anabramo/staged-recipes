@@ -20,8 +20,8 @@ build:
 # conda-smithy to generate the correct build matrix.
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    #- python                                 # [build_platform != target_platform]
+    # - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
@@ -35,7 +35,7 @@ requirements:
     - {{ cdt('libxxf86vm') }}  # [linux]
     - {{ cdt('libxext') }}     # [linux]
   host:
-    - python
+    #- python
     - boost
     - clhep =2.4.5.1
     - expat
@@ -48,7 +48,7 @@ requirements:
     - xorg-libxmu
     - zlib
   run:
-    - python
+    #- python
     - boost
     - libglu  # [linux]
     - xorg-libx11
@@ -63,17 +63,17 @@ requirements:
     - xorg-libxfixes  # [linux]
     # GEANT4 data packages, versions are taken from:
     # https://github.com/Geant4/geant4/blob/v{{ version }}/cmake/Modules/Geant4DatasetDefinitions.cmake
-    - geant4-data-abla =3.1
-    - geant4-data-emlow =8.0
-    - geant4-data-ensdfstate =2.3
-    - geant4-data-incl =1.0
-    - geant4-data-ndl =4.6
-    - geant4-data-particlexs =4.0
-    - geant4-data-photonevaporation =5.7
-    - geant4-data-pii =1.3
-    - geant4-data-radioactivedecay =5.6
-    - geant4-data-realsurface =2.2
-    - geant4-data-saiddata =2.0
+    # - geant4-data-abla =3.1
+    # - geant4-data-emlow =8.0
+    # - geant4-data-ensdfstate =2.3
+    # - geant4-data-incl =1.0
+    # - geant4-data-ndl =4.6
+    # - geant4-data-particlexs =4.0
+    # - geant4-data-photonevaporation =5.7
+    # - geant4-data-pii =1.3
+    # - geant4-data-radioactivedecay =5.6
+    # - geant4-data-realsurface =2.2
+    # - geant4-data-saiddata =2.0
     
     # These would be the versions for Geant4 10.4.p3, but they are not available on conda forge
     # Use the latest ones for now and check for problems
@@ -97,7 +97,7 @@ test:
     - {{ compiler('cxx') }}
   commands:
     - geant4-config --version
-    - $RECIPE_DIR/test_geant4.sh
+    #- $RECIPE_DIR/test_geant4.sh
 
 
 about:

@@ -59,6 +59,23 @@ make install "-j${CPU_COUNT}"
 echo "Contents of ${PREFIX}/bin/geant4.sh is"
 cat "${PREFIX}/bin/geant4.sh"
 
+# Add a step here to make an activation script that sets the
+# data directory environmental variables, asthe correct data
+# package versions are not available on conda-forge
+mkdir -p "${PREFIX}/etc/conda/activate.d"
+mkdir -p "${PREFIX}/etc/conda/deactivate.d"
+
+echo "Preparing activation script"
+while read -r line; do
+    var_name=$(echo "$line" | awk -F'=' '{gsub(/ /, "", $1); sub(/^export/, "", $1); print $1}')
+    directory_name=$(echo "$line" | grep -o '/data/[^>]*' | awk -F '/data/' '{gsub(/ /, "", $2); print $2}')
+    
+    if [ -n "$directory_name" ]; then
+        echo 'export '${var_name}'=${CONDA_PREFIX}/share/Geant4/data/'${directory_name}'' >> "${PREFIX}/etc/conda/activate.d/activate-${PKG_NAME}.sh"
+        echo 'unset '${var_name} >> "${PREFIX}/etc/conda/deactivate.d/deactivate-${PKG_NAME}.sh"
+    fi
+done < "${PREFIX}/bin/geant4.sh"
+
 # Remove the geant4.(c)sh scripts and replace with a dummy version
 for suffix in sh csh; do
   rm "${PREFIX}/bin/geant4.${suffix}"

@@ -1,4 +1,4 @@
-{% set name = "bdsim" %}
+{% set name = "bdsimul" %}
 {% set version = "1.7.0" %}
 
 package:
@@ -14,7 +14,7 @@ build:
   skip: true  # [win]
   script: ${RECIPE_DIR}/build_bdsim.sh
   run_exports:
-    - {{ pin_subpackage('bdsim', max_pin='x.x.x') }}
+    - {{ pin_subpackage('bdsimul', max_pin='x.x') }}
 
 # Specifying `compiler('cxx')` as a top-level build requirements to force
 # conda-smithy to generate the correct build matrix.
@@ -35,18 +35,15 @@ requirements:
     - {{ cdt('libxxf86vm') }}  # [linux]
     - {{ cdt('libxext') }}     # [linux]
   host:
-    # - python
-    #- geant4 =10.4.3.1
     - geant4
-    - clhep =2.4.5.1
-    - root
+    - clhep
     - root_base
     - expat
     - flex
     - bison
     - freetype
     - libglu  # [linux]
-    - qt-main
+    #- qt-main
     - xerces-c
     - libffi
     - xorg-libx11
@@ -60,9 +57,8 @@ requirements:
     - {{ cdt('libxxf86vm') }}  # [linux]
     - {{ cdt('libxext') }}     # [linux]
   run:
-    - python
-    - root
     - root_base
+    - geant4
     - libglu  # [linux]
     - xorg-libx11
     - xorg-libxmu
